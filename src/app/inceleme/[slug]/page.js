@@ -2,7 +2,7 @@ import { getReviewData, getAllReviewSlugs } from '@/lib/markdown';
 import Link from 'next/link';
 
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const reviewData = await getReviewData(slug);
 
   return {
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ReviewPost({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const reviewData = await getReviewData(slug);
 
   const jsonLd = {

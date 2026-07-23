@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export async function generateMetadata({ params }) {
   // await params parsing for Next.js App Router rules
-  const { category, slug } = params;
+  const { category, slug } = await params;
   const guideData = await getGuideData(category, slug);
 
   return {
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function GuidePost({ params }) {
-  const { category, slug } = params;
+  const { category, slug } = await params;
   const guideData = await getGuideData(category, slug);
 
   const jsonLd = {
