@@ -1,156 +1,126 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { casinosData } from '@/data/casinos';
+import { useState } from 'react';
 
 export default function BonusCalculator() {
   const [deposit, setDeposit] = useState(1000);
   const [matchPercent, setMatchPercent] = useState(100);
+  const [wagering, setWagering] = useState(30);
 
-  // Derive recommendedCasino directly during render
-  const getRecommendedCasino = () => {
-    const matchingCasinos = casinosData.filter(
-      (c) => c.matchPercent >= matchPercent
-    );
-
-    if (matchingCasinos.length > 0) {
-      return [...matchingCasinos].sort((a, b) => b.rating - a.rating)[0];
-    }
-    return [...casinosData].sort((a, b) => b.rating - a.rating)[0];
-  };
-
-  const recommendedCasino = getRecommendedCasino();
-
-  const calculateBonus = () => {
-    const limit = recommendedCasino.maxBonus;
-    const rawBonus = deposit * (matchPercent / 100);
-    return Math.min(rawBonus, limit);
-  };
-
-  const bonusValue = calculateBonus();
+  const bonusValue = deposit * (matchPercent / 100);
   const totalBalance = deposit + bonusValue;
-
-  // Extract wagering multiplier (e.g., "30x" -> 30)
-  const getWagerMultiplier = (wagerText) => {
-    const match = wagerText.match(/(\d+)x/);
-    return match ? parseInt(match[1]) : 30; // default 30x
-  };
-
-  const multiplier = getWagerMultiplier(recommendedCasino.wagering);
-  const estimatedWagering = multiplier * (recommendedCasino.wagering.includes('Sadece') || recommendedCasino.wagering.includes('Yalnızca') ? bonusValue : totalBalance);
+  // Estimated volume is usually bonus * wagering OR (deposit + bonus) * wagering. We'll use bonus * wagering as standard in TR.
+  const estimatedWagering = bonusValue * wagering;
 
   return (
     <section id="calculator" style={{ padding: '6rem 0' }}>
       <div className="container">
         <div className="section-header">
           <h2 className="section-title">
-            Akıllı <span className="premium-gradient">Bonus Hesaplayıcı</span>
+            Gelişmiş <span className="premium-gradient">Bonus Hesaplayıcı</span>
           </h2>
           <p className="section-desc">
-            Yatırmak istediğiniz tutarı belirleyin, hangi sitede ne kadar bonus alacağınızı ve çevrim şartlarını anında görün.
+            Yatırmak istediğiniz tutarı, bonus oranını ve çevrim katsayısını belirleyerek ulaşmanız gereken oyun hacmini net bir şekilde hesaplayın.
           </p>
         </div>
 
-        <div className="calculator-card glass-panel">
-          <div className="calc-grid">
+        <div className="calculator-card glass-panel" style={{ padding: '2rem', borderRadius: '24px', border: '1px solid rgba(38,161,123,0.3)' }}>
+          <div className="calc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+            
             {/* Left Column: Controls */}
-            <div className="calc-inputs">
+            <div className="calc-inputs" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              
               <div className="form-group">
-                <div className="form-label-row">
-                  <label htmlFor="deposit-range">Yatırım Tutarı</label>
-                  <span className="label-value">₺{deposit.toLocaleString('tr-TR')}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <label style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>Yatırım Tutarı</label>
+                  <span style={{ color: 'var(--accent-glow)', fontWeight: 'bold' }}>₺{deposit.toLocaleString('tr-TR')}</span>
                 </div>
                 <input 
-                  id="deposit-range"
                   type="range" 
                   min="100" 
-                  max="30000" 
+                  max="50000" 
                   step="100" 
                   value={deposit} 
                   onChange={(e) => setDeposit(Number(e.target.value))}
-                  className="slider-input"
+                  style={{ width: '100%', accentColor: '#26a17b' }}
                 />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                  <span>₺100</span>
-                  <span>₺10.000</span>
-                  <span>₺20.000</span>
-                  <span>₺30.000</span>
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'block', color: 'var(--text-main)', fontWeight: 'bold', marginBottom: '1rem' }}>Bonus Oranı</label>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {[50, 100, 150, 200].map(val => (
+                    <button 
+                      key={val}
+                      onClick={() => setMatchPercent(val)}
+                      style={{
+                        flex: 1, padding: '10px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 'bold',
+                        background: matchPercent === val ? '#26a17b' : 'rgba(255,255,255,0.1)',
+                        color: matchPercent === val ? '#000' : '#fff'
+                      }}
+                    >
+                      %{val}
+                    </button>
+                  ))}
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Hedef Bonus Oranı</label>
-                <div className="btn-group-toggle">
-                  <button 
-                    type="button"
-                    className={`toggle-btn ${matchPercent === 100 ? 'active' : ''}`}
-                    onClick={() => setMatchPercent(100)}
-                  >
-                    %100 Eşleşme
-                  </button>
-                  <button 
-                    type="button"
-                    className={`toggle-btn ${matchPercent === 150 ? 'active' : ''}`}
-                    onClick={() => setMatchPercent(150)}
-                  >
-                    %150 Eşleşme
-                  </button>
-                  <button 
-                    type="button"
-                    className={`toggle-btn ${matchPercent === 200 ? 'active' : ''}`}
-                    onClick={() => setMatchPercent(200)}
-                  >
-                    %200 Eşleşme
-                  </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                  <label style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>Çevrim Katsayısı</label>
+                  <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>{wagering}x</span>
                 </div>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="50" 
+                  step="1" 
+                  value={wagering} 
+                  onChange={(e) => setWagering(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#e74c3c' }}
+                />
               </div>
 
-              {/* Dynamic recommendation link */}
-              <div className="calc-recommendation">
-                <div className="calc-rec-info">
-                  <h5>Önerilen Casino</h5>
-                  <p>{recommendedCasino.name}</p>
-                </div>
-                <div>
-                  <a 
-                    href={recommendedCasino.url} 
-                    className="btn-primary" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}
-                  >
-                    Üye Ol & Bonus Al
-                  </a>
-                </div>
-              </div>
             </div>
 
             {/* Right Column: Results */}
-            <div className="calc-results-panel">
-              <div className="result-row">
-                <span className="result-label">Yatırdığınız Nakit</span>
-                <span className="result-value">₺{deposit.toLocaleString('tr-TR')}</span>
+            <div className="calc-results-panel" style={{ background: 'rgba(0,0,0,0.5)', padding: '2rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Yatırılan Nakit</span>
+                <span style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>₺{deposit.toLocaleString('tr-TR')}</span>
               </div>
-              <div className="result-row">
-                <span className="result-label">Kazanılan Bonus Cash</span>
-                <span className="result-value accent">+ ₺{bonusValue.toLocaleString('tr-TR')}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Alınacak Bonus</span>
+                <span style={{ color: '#26a17b', fontWeight: 'bold' }}>+ ₺{bonusValue.toLocaleString('tr-TR')}</span>
               </div>
-              <div className="result-row">
-                <span className="result-label">Toplam Başlangıç Bakiyesi</span>
-                <span className="result-value accent" style={{ fontSize: '2.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                <span style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Toplam Kasa</span>
+                <span style={{ color: 'var(--accent-glow)', fontSize: '1.5rem', fontWeight: 'bold' }}>
                   ₺{totalBalance.toLocaleString('tr-TR')}
                 </span>
               </div>
-              <div className="result-row">
-                <span className="result-label">Tahmini Çevrim Şartı ({multiplier}x)</span>
-                <span className="result-value" style={{ color: 'var(--accent-rose)', fontSize: '1.25rem' }}>
+              
+              <div style={{ marginTop: 'auto', background: 'rgba(231, 76, 60, 0.1)', border: '1px solid rgba(231, 76, 60, 0.3)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
+                <span style={{ color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem' }}>Tamamlanması Gereken Oyun Hacmi</span>
+                <span style={{ color: '#e74c3c', fontSize: '2rem', fontWeight: 'bold' }}>
                   ₺{estimatedWagering.toLocaleString('tr-TR')}
                 </span>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                  Para çekimi yapabilmeniz için casino oyunlarında oynamanız gereken toplam bahis miktarıdır. (Bonus Miktarı x Çevrim Şartı)
+                </p>
               </div>
             </div>
+
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .calc-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

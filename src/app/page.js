@@ -1,199 +1,111 @@
-'use client';
-
-import { useState } from 'react';
+import Link from 'next/link';
+import CasinoGrid from '@/components/CasinoGrid';
 import { casinosData } from '@/data/casinos';
-import BrandLogo from '@/components/BrandLogo';
-import CasinoModal from '@/components/CasinoModal';
+import { getSortedGuidesData } from '@/lib/markdown';
+
+export const metadata = {
+  title: "Senkazan.pro - En Güvenilir Bahis ve Casino Siteleri 2026",
+  description: "Türkiye'nin en güvenilir lisanslı casino siteleri, bedava deneme bonusları, anında para çekim garantisi veren bahis siteleri listesi.",
+};
 
 export default function Home() {
-  const [selectedCasino, setSelectedCasino] = useState(null);
+  const allGuides = getSortedGuidesData().slice(0, 3); // Take top 3 for homepage
+
   return (
-    <main style={{ minHeight: '100vh', paddingTop: '80px' }}>
+    <main>
       {/* Hero Section */}
-      <section style={{ 
-        padding: '6rem 0 3rem', 
-        textAlign: 'center', 
-        background: 'radial-gradient(circle at center, rgba(0, 255, 135, 0.08) 0%, transparent 65%)',
+      <section className="hero" style={{ 
+        paddingTop: '120px', 
+        paddingBottom: '60px',
+        textAlign: 'center',
         position: 'relative'
       }}>
-        <div className="container" style={{ position: 'relative', zIndex: 3 }}>
-          <span className="badge-gold" style={{ marginBottom: '1.5rem', display: 'inline-block' }}>
-            ★ LİSANSLI PREMİUM REHBER 2026
-          </span>
-          <h1 style={{ 
-            fontSize: 'clamp(2.25rem, 6vw, 4rem)', 
-            marginBottom: '1.5rem', 
-            lineHeight: '1.1',
-            fontWeight: 900 
+        <div className="container">
+          <div className="badge" style={{ 
+            display: 'inline-block', 
+            background: 'rgba(38, 161, 123, 0.1)', 
+            color: 'var(--accent-glow)',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            marginBottom: '1.5rem',
+            border: '1px solid rgba(38, 161, 123, 0.2)',
+            fontSize: '0.9rem',
+            fontWeight: 600
           }}>
-            Güvenilir Bahis ve <span className="premium-gradient">iGaming Siteleri</span>
+            Güncellendi: Temmuz 2026
+          </div>
+          
+          <h1 className="hero-title" style={{ maxWidth: '800px', margin: '0 auto 1.5rem' }}>
+            Türkiye'nin En Çok Kazandıran <span className="premium-gradient">Casino Siteleri</span>
           </h1>
-          <p style={{ 
-            fontSize: '1.2rem', 
-            color: 'var(--text-muted)', 
-            maxWidth: '850px', 
-            margin: '0 auto 2.5rem', 
-            lineHeight: '1.6' 
-          }}>
-            En yüksek oranlar, çevrimsiz deneme bonusları ve 5 dakikada ödeme garantisi sunan Türkiye'nin en popüler lisanslı casino sitelerini keşfedin. Doğrudan giriş yapmak için markanın kartına veya ikonuna tıklayabilirsiniz.
+          
+          <p className="hero-subtitle" style={{ maxWidth: '600px', margin: '0 auto 3rem' }}>
+            En yüksek oranlar, çevrimsiz deneme bonusları ve 5 dakikada ödeme garantisi sunan Türkiye'nin en popüler lisanslı casino sitelerini keşfedin.
+            Doğrudan giriş yapmak veya bonus detaylarını görmek için inceleme butonlarına tıklayabilirsiniz.
           </p>
-        </div>
 
-        {/* Ambient glow backgrounds */}
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '10%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '10%',
-          right: '5%',
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(255, 196, 0, 0.03) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
+          <CasinoGrid casinosData={casinosData} />
+
+        </div>
       </section>
 
-      {/* Brand Showcase (Vitrin) Section */}
-      <section style={{ padding: '2rem 0 6rem' }}>
+      {/* NEW: Guide Sections */}
+      <section style={{ padding: '60px 0', background: 'rgba(0,0,0,0.2)' }}>
         <div className="container">
-          {/* Section Header Removed per request */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: '2rem', color: 'var(--text-main)' }}>Son Eklenen <span className="premium-gradient">Rehberler</span></h2>
+            <Link href="/rehberler" style={{ color: 'var(--accent-glow)', textDecoration: 'none', fontWeight: 600 }}>
+              Tümünü Gör →
+            </Link>
+          </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '2.5rem',
-            marginTop: '2.5rem'
-          }}>
-            {casinosData.map((casino) => (
-              <div 
-                key={casino.id} 
-                onClick={() => setSelectedCasino(casino)}
-                className="glass-panel"
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  padding: '2.5rem 2rem 2rem',
-                  textAlign: 'center',
-                  transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-                  cursor: 'pointer',
-                  textDecoration: 'none',
-                  overflow: 'hidden',
-                  background: 'linear-gradient(145deg, rgba(20,22,35,0.7) 0%, rgba(10,12,20,0.9) 100%)',
-                  border: '1px solid rgba(255,255,255,0.05)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-12px)';
-                  e.currentTarget.style.borderColor = 'rgba(0, 255, 135, 0.4)';
-                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 255, 135, 0.1), 0 0 20px rgba(0, 255, 135, 0.05) inset';
-                  e.currentTarget.querySelector('.hover-glow').style.opacity = '1';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
-                  e.currentTarget.querySelector('.hover-glow').style.opacity = '0';
-                }}
-              >
-                {/* Background Glow */}
-                <div className="hover-glow" style={{
-                  position: 'absolute',
-                  top: '-50%',
-                  left: '-50%',
-                  width: '200%',
-                  height: '200%',
-                  background: 'radial-gradient(circle, rgba(0,255,135,0.1) 0%, transparent 70%)',
-                  opacity: 0,
-                  transition: 'opacity 0.4s ease',
-                  pointerEvents: 'none',
-                  zIndex: 0
-                }}></div>
-
-                {/* Badge Overlay */}
-                <div style={{
-                  position: 'absolute',
-                  top: '1rem',
-                  right: '1rem',
-                  background: 'linear-gradient(90deg, #ff2a5f, #ff7600)',
-                  color: 'white',
-                  padding: '0.4rem 1rem',
-                  borderRadius: '20px',
-                  fontSize: '0.75rem',
-                  fontWeight: 800,
-                  boxShadow: '0 4px 10px rgba(255, 42, 95, 0.3)',
-                  zIndex: 1,
-                  letterSpacing: '0.5px',
-                  textTransform: 'uppercase'
-                }}>
-                  {casino.badge}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+            {allGuides.map(({ slug, category, title, description, date }) => (
+              <div key={slug} className="glass-panel" style={{ padding: '1.5rem', borderRadius: '16px', transition: 'transform 0.3s' }}>
+                <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ background: 'rgba(38, 161, 123, 0.2)', color: '#26a17b', padding: '4px 10px', borderRadius: '8px', fontSize: '0.85rem', textTransform: 'uppercase' }}>
+                    {category}
+                  </span>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{date}</span>
                 </div>
+                
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-main)' }}>{title}</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>{description}</p>
 
-                {/* Logo wrapper */}
-                <div style={{ 
-                  width: '100%', 
-                  height: '80px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  background: 'rgba(255,255,255,0.03)',
-                  borderRadius: '16px',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  marginBottom: '1.5rem',
-                  padding: '10px',
-                  zIndex: 1
-                }}>
-                  <BrandLogo brandId={casino.id} size={60} />
-                </div>
-
-                {/* Content */}
-                <div style={{ zIndex: 1, width: '100%' }}>
-                  <h3 style={{ fontSize: '1.5rem', marginBottom: '0.4rem', color: 'var(--text-main)', fontWeight: 800, letterSpacing: '-0.5px' }}>
-                    {casino.name}
-                  </h3>
-
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '1.5rem' }}>
-                    <span style={{ color: '#ffd600', fontSize: '1.1rem' }}>★</span>
-                    <span style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--text-main)' }}>{casino.rating}</span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>({casino.ratingCount} Oylama)</span>
-                  </div>
-
-                  {/* Toned Down CTA Button */}
-                  <div className="btn-secondary" style={{
-                    width: '100%',
-                    padding: '0.9rem',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.4rem',
-                    transition: 'all 0.3s ease',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    fontSize: '0.9rem'
-                  }}>
-                    BONUS İNCELE
-                    <span style={{ fontSize: '1.1rem' }}>→</span>
-                  </div>
-                </div>
+                <Link href={`/rehberler/${category}/${slug}`} className="btn-primary" style={{ display: 'inline-block', width: '100%', textAlign: 'center', padding: '10px' }}>
+                  Hemen Oku
+                </Link>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Pop-up Modal */}
-      <CasinoModal 
-        casino={selectedCasino} 
-        onClose={() => setSelectedCasino(null)} 
-      />
+      {/* Mini Categories Section */}
+      <section style={{ padding: '60px 0' }}>
+        <div className="container">
+          <h2 style={{ fontSize: '2rem', color: 'var(--text-main)', textAlign: 'center', marginBottom: '2rem' }}>
+            Kategorilere Göz Atın
+          </h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'center' }}>
+             {['Slot Oyunları', 'Canlı Casino', 'Crash Oyunları', 'Bonuslar', 'Ödeme Yöntemleri'].map((cat) => (
+                <Link key={cat} href="/rehberler" className="glass-panel" style={{ padding: '15px 30px', borderRadius: '30px', color: 'var(--text-main)', textDecoration: 'none', fontWeight: 600, transition: 'all 0.3s' }}>
+                  {cat}
+                </Link>
+             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Info Section */}
+      <section style={{ padding: '80px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="container" style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>Senkazan.pro Otoriter iGaming Platformu</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: '1.8' }}>
+            Senkazan.pro, yalnızca bir casino listeleme platformu değil, alanında uzman editörler tarafından hazırlanan dev bir bilgi merkezi ve inceleme portalıdır. Amacımız, oyuncuları sahte sitelerden korumak, kazandıran oyunların dinamiklerini (RTP, Volatilite) açıklamak ve bilinçli oyun oynamayı teşvik etmektir.
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

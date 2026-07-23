@@ -50,7 +50,17 @@ export default function RootLayout({ children }) {
                   <li><a href="#bonuses">Deneme Bonusları</a></li>
                   <li><a href="#bonuses">Kripto Casino</a></li>
                   <li><a href="#bonuses">Hızlı Para Çekim</a></li>
-                  <li><a href="#guides">Lisans Kontrolü</a></li>
+                  <li><Link href="/rehberler">Lisans Kontrolü</Link></li>
+                </ul>
+              </div>
+
+              <div className="footer-links-col">
+                <h4>Kurumsal</h4>
+                <ul>
+                  <li><Link href="/hakkimizda">Hakkımızda</Link></li>
+                  <li><Link href="/sorumlu-oyun">Sorumlu Oyun Politikası</Link></li>
+                  <li><Link href="/gizlilik-politikasi">Gizlilik ve Çerez Politikası</Link></li>
+                  <li><Link href="/iletisim">İletişim</Link></li>
                 </ul>
               </div>
             </div>
